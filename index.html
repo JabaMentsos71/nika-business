@@ -68,20 +68,34 @@
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.3s; }
         .cart-overlay.active { opacity: 1; visibility: visible; }
 
+        /* Панель корзины занимает ровно видимую высоту экрана (100dvh учитывает адресную строку на телефоне),
+           шапка и подвал не сжимаются, а прокручивается только середина — поэтому «Итого» и кнопка всегда видны */
         .cart-sidebar {
-            position: fixed; top: 0; right: -100%; width: 100%; max-width: 480px; height: 100vh;
+            position: fixed; top: 0; bottom: 0; right: -100%; width: 100%; max-width: 480px;
+            height: 100vh; height: 100dvh;
             background: var(--surface-color); box-shadow: -5px 0 30px rgba(0,0,0,0.1); z-index: 2001;
             transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column;
         }
         .cart-sidebar.active { right: 0; }
 
-        .cart-header { padding: 20px 30px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #fff;}
+        .cart-header { flex-shrink: 0; padding: 20px 30px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; background: #fff;}
         .cart-header h2 { font-size: 22px; color: var(--primary-color); }
         .close-btn { background: none; border: none; font-size: 28px; cursor: pointer; color: var(--light-text); transition: 0.2s;}
         .close-btn:hover { color: #dc3545; }
 
-        .cart-body { flex-grow: 1; overflow-y: auto; padding: 25px 30px; background: var(--bg-color); }
-        .cart-footer { padding: 20px 30px; border-top: 1px solid var(--border-color); background: #fff; }
+        .cart-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 25px 30px; background: var(--bg-color); }
+        .cart-footer { flex-shrink: 0; padding: 16px 30px calc(16px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border-color); background: #fff; box-shadow: 0 -6px 16px rgba(0,0,0,0.06); }
+        .cart-total { display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+
+        /* На телефоне делаем отступы компактнее, чтобы влезало больше товаров */
+        @media (max-width: 480px) {
+            .cart-header { padding: 14px 18px; }
+            .cart-body { padding: 16px 18px; }
+            .cart-footer { padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); }
+            .cart-total { font-size: 18px; margin-bottom: 10px; }
+            .btn-full { padding: 14px; }
+            .btn-outline { padding: 10px; margin-top: 4px; }
+        }
 
         /* Элементы внутри корзины */
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; margin-bottom: 15px; background: #fff; border: 1px solid var(--border-color); border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);}
@@ -285,7 +299,7 @@
 
         <!-- Подвал корзины (Сумма и Кнопки) -->
         <div class="cart-footer" id="cartFooter">
-            <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; margin-bottom: 15px;">
+            <div class="cart-total">
                 <span>Итого:</span>
                 <span id="cartTotalPrice" style="color: var(--primary-color);">0 ₸</span>
             </div>
@@ -398,12 +412,14 @@
         function openCart() {
             document.getElementById('cartOverlay').classList.add('active');
             document.getElementById('cartSidebar').classList.add('active');
+            document.body.style.overflow = 'hidden';
             backToCart();
         }
 
         function closeCart() {
             document.getElementById('cartOverlay').classList.remove('active');
             document.getElementById('cartSidebar').classList.remove('active');
+            document.body.style.overflow = '';
             if(document.getElementById('successView').style.display === 'block') {
                 cart = []; updateCart();
                 document.getElementById('orderForm').reset();
