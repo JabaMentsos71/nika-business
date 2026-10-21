@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Админ-панель | Nika Business</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1A2B4C;
+            --primary-dark: #111d36;
+            --accent-color: #D4AF37;
+            --bg-color: #F4F5F8;
+            --surface-color: #ffffff;
+            --text-color: #333333;
+            --light-text: #666666;
+            --border-color: #E3E5EA;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-bg: #FFF8E1;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background: var(--bg-color); color: var(--text-color); line-height: 1.5; min-height: 100vh; }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--primary-color); }
+        button, input, select, textarea { font: inherit; color: inherit; }
+        a { color: var(--primary-color); }
+        [hidden] { display: none !important; }
+        .muted { color: var(--light-text); }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- Кнопки --- */
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; border-radius: 8px; padding: 10px 16px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; text-decoration: none; white-space: nowrap; }
+        .btn.primary { background: var(--primary-color); color: #fff; }
+        .btn.primary:hover { background: var(--primary-dark); }
+        .btn.ghost { background: #fff; color: var(--primary-color); box-shadow: inset 0 0 0 1px var(--border-color); }
+        .btn.ghost:hover { box-shadow: inset 0 0 0 1px var(--primary-color); }
+        .btn.danger { background: var(--error-color); color: #fff; }
+        .btn.danger:hover { background: #b52a37; }
+        .btn.link { background: none; color: var(--primary-color); padding: 6px 0; text-decoration: underline; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; animation: spin 0.9s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- Поля форм --- */
+        .field { margin-bottom: 16px; }
+        .field label, .field-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--primary-color); margin-bottom: 6px; }
+        .field label .counter { font-weight: 400; color: var(--light-text); }
+        .field input[type=text], .field input[type=password], .field input[type=number], .field input[type=url], .field textarea, .field select, .toolbar input, .toolbar select {
+            width: 100%; padding: 11px 13px; border: 1px solid var(--border-color); border-radius: 8px; background: #fff; outline: none; transition: 0.2s; font-size: 15px;
+        }
+        .field textarea { resize: vertical; min-height: 96px; }
+        .field input:focus, .field textarea:focus, .field select:focus, .toolbar input:focus, .toolbar select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(26, 43, 76, 0.08); }
+        .field.invalid input, .field.invalid textarea { border-color: var(--error-color); }
+        .field-error { color: var(--error-color); font-size: 13px; margin-top: 5px; display: none; }
+        .field.invalid .field-error { display: block; }
+        .field-hint { font-size: 13px; color: var(--light-text); margin-top: 5px; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .check { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; }
+        .check input { width: 18px; height: 18px; accent-color: var(--primary-color); }
+        .input-with-btn { position: relative; }
+        .input-with-btn input { padding-right: 90px !important; }
+        .input-with-btn button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: #f1f3f5; border: none; border-radius: 6px; padding: 6px 10px; font-size: 13px; cursor: pointer; }
+        .form-msg { border-radius: 8px; padding: 11px 14px; font-size: 14px; margin-bottom: 14px; }
+        .form-msg.error { background: rgba(220, 53, 69, 0.07); border: 1px solid rgba(220, 53, 69, 0.3); color: #a71d2a; }
+
+        /* --- Экран входа --- */
+        .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 16px; }
+        .login-card { background: #fff; border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 20px 50px rgba(26, 43, 76, 0.08); padding: 36px; width: 100%; max-width: 460px; }
+        .login-logo { font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--primary-color); font-size: 15px; letter-spacing: 0.5px; }
+        .login-card h1 { font-size: 26px; margin: 6px 0 10px; }
+        .login-card > p { color: var(--light-text); font-size: 14px; margin-bottom: 22px; }
+        .login-card .btn.primary { width: 100%; padding: 13px; font-size: 15px; margin-top: 4px; }
+        .login-alt { text-align: center; margin-top: 10px; }
+        .howto { margin-top: 18px; border-top: 1px solid var(--border-color); padding-top: 14px; font-size: 14px; }
+        .howto summary { cursor: pointer; font-weight: 600; color: var(--primary-color); }
+        .howto ol { margin: 12px 0 8px 20px; display: grid; gap: 6px; }
+        .howto .field { margin: 12px 0 0; }
+
+        /* --- Шапка админки --- */
+        .topbar { background: var(--primary-color); color: #fff; }
+        .topbar .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
+        .brand { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; }
+        .brand span { font-weight: 600; opacity: 0.7; font-size: 14px; margin-left: 8px; }
+        .topbar-actions { display: flex; align-items: center; gap: 10px; }
+        .topbar-actions .btn.ghost { background: rgba(255,255,255,0.1); color: #fff; box-shadow: none; }
+        .topbar-actions .btn.ghost:hover { background: rgba(255,255,255,0.2); }
+        .user-label { font-size: 13px; opacity: 0.8; }
+        .demo-banner { background: var(--warning-bg); border-bottom: 1px solid #f2dc9b; text-align: center; padding: 10px 16px; font-size: 14px; }
+
+        /* --- Панель публикации --- */
+        .publishbar { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 1px solid var(--border-color); }
+        .publishbar .container { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding-top: 10px; padding-bottom: 10px; }
+        .publishbar.dirty { background: var(--warning-bg); border-bottom-color: #f2dc9b; }
+        .publish-status { font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success-color); flex-shrink: 0; }
+        .publishbar.dirty .status-dot { background: #e0a800; }
+        .publishbar.busy .status-dot { background: var(--primary-color); animation: pulse 1s ease infinite; }
+        .publishbar.failed .status-dot { background: var(--error-color); }
+        @keyframes pulse { 50% { opacity: 0.3; } }
+        .publish-actions { display: flex; gap: 10px; flex-shrink: 0; }
+
+        /* --- Панель инструментов и список товаров --- */
+        main.container { padding-top: 24px; padding-bottom: 60px; }
+        .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+        .toolbar h1 { font-size: 24px; }
+        .stats { font-size: 14px; color: var(--light-text); }
+        .toolbar-right { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .toolbar input[type=search] { width: 230px; padding: 9px 12px; font-size: 14px; }
+        .toolbar select { width: auto; padding: 9px 12px; font-size: 14px; }
+        .filter-hint { font-size: 13px; color: var(--light-text); margin: -8px 0 12px; }
+
+        .product-list { display: grid; gap: 10px; }
+        .p-row { display: grid; grid-template-columns: 34px 72px minmax(0, 1fr) 140px 130px auto; gap: 16px; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; transition: 0.2s; }
+        .p-row:hover { box-shadow: 0 6px 18px rgba(26, 43, 76, 0.06); }
+        .p-row.is-hidden .p-thumb, .p-row.is-hidden .p-info { opacity: 0.5; }
+        .p-row.flash { animation: flash 1.6s ease; }
+        @keyframes flash { 0%, 30% { box-shadow: 0 0 0 3px var(--accent-color); } 100% { box-shadow: none; } }
+        .order-btns { display: flex; flex-direction: column; gap: 4px; }
+        .icon-btn { width: 30px; height: 26px; border: 1px solid var(--border-color); background: #fff; border-radius: 6px; cursor: pointer; font-size: 13px; color: var(--primary-color); }
+        .icon-btn:hover:not(:disabled) { border-color: var(--primary-color); }
+        .icon-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .p-thumb { width: 72px; height: 54px; border-radius: 8px; overflow: hidden; background: linear-gradient(135deg, #1A2B4C, #2d4473); color: #fff; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 800; }
+        .p-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .p-title { font-weight: 600; color: var(--primary-color); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .p-meta { font-size: 13px; color: var(--light-text); }
+        .p-desc { font-size: 13px; color: var(--light-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 2px 8px; border-radius: 20px; }
+        .tag.new { background: rgba(40, 167, 69, 0.12); color: #1e7e34; }
+        .tag.changed { background: rgba(224, 168, 0, 0.15); color: #8a6d00; }
+        .tag.badge { background: rgba(212, 175, 55, 0.2); color: #7a6118; }
+        .p-price { font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--primary-color); }
+        .p-price s { display: block; font-family: 'Inter', sans-serif; font-weight: 400; font-size: 13px; color: var(--light-text); }
+        .switch { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; user-select: none; }
+        .switch input { position: absolute; opacity: 0; pointer-events: none; }
+        .switch .track { width: 38px; height: 22px; border-radius: 22px; background: #cfd3db; position: relative; transition: 0.2s; flex-shrink: 0; }
+        .switch .track::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+        .switch input:checked + .track { background: var(--success-color); }
+        .switch input:checked + .track::after { left: 19px; }
+        .switch input:focus-visible + .track { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+        .p-actions { display: flex; gap: 6px; }
+        .p-actions .btn { padding: 8px 12px; font-size: 13px; }
+        .p-actions .btn.del { color: var(--error-color); }
+
+        .empty-state { text-align: center; background: #fff; border: 1px dashed var(--border-color); border-radius: 12px; padding: 50px 20px; color: var(--light-text); }
+        .empty-state h3 { margin-bottom: 8px; }
+        .empty-state .btn { margin-top: 16px; }
+        .loading-state { text-align: center; padding: 60px 20px; color: var(--light-text); }
+
+        /* --- Модальные окна --- */
+        .modal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .modal-backdrop { position: absolute; inset: 0; background: rgba(17, 29, 54, 0.55); }
+        .modal-panel { position: relative; background: #fff; border-radius: 16px; width: 100%; max-width: 440px; max-height: calc(100dvh - 40px); display: flex; flex-direction: column; box-shadow: 0 30px 60px rgba(0,0,0,0.25); animation: pop 0.2s ease; }
+        .modal-panel.wide { max-width: 980px; }
+        @keyframes pop { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+        .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--border-color); flex-shrink: 0; }
+        .modal-head h2 { font-size: 20px; }
+        .modal-close { background: none; border: none; font-size: 28px; line-height: 1; cursor: pointer; color: var(--light-text); }
+        .modal-close:hover { color: var(--error-color); }
+        .modal-body { padding: 22px 24px; overflow-y: auto; flex: 1 1 auto; min-height: 0; }
+        .modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 14px 24px; border-top: 1px solid var(--border-color); flex-shrink: 0; }
+        .confirm-text { color: var(--text-color); font-size: 15px; }
+
+        .editor-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 28px; }
+        .editor-preview { position: sticky; top: 0; align-self: start; }
+        .preview-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--light-text); font-weight: 700; margin-bottom: 10px; }
+
+        /* Фото: зона перетаскивания */
+        .dropzone { border: 2px dashed var(--border-color); border-radius: 12px; background: #fafbfc; aspect-ratio: 4 / 3; max-height: 260px; width: 100%; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer; position: relative; overflow: hidden; transition: 0.2s; }
+        .dropzone:hover, .dropzone.drag { border-color: var(--primary-color); background: rgba(26, 43, 76, 0.03); }
+        .dropzone img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+        .dropzone-empty { padding: 20px; font-size: 14px; color: var(--light-text); }
+        .dropzone-empty b { color: var(--primary-color); }
+        .dropzone-busy { position: absolute; inset: 0; background: rgba(255,255,255,0.85); display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--primary-color); }
+        .dropzone-busy .spinner { width: 20px; height: 20px; border: 3px solid rgba(26,43,76,0.2); border-top-color: var(--primary-color); border-radius: 50%; animation: spin 0.9s linear infinite; }
+        .photo-meta { font-size: 13px; color: var(--light-text); margin-top: 6px; min-height: 18px; }
+        .photo-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .photo-actions .btn { padding: 7px 12px; font-size: 13px; }
+        .url-row { display: flex; gap: 8px; margin-top: 8px; }
+        .url-row input { flex: 1; }
+
+        /* Карточка-превью (как на витрине) */
+        .product-card { background: #fff; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; }
+        .product-media { position: relative; aspect-ratio: 4 / 3; background: linear-gradient(135deg, #1A2B4C, #2d4473); overflow: hidden; }
+        .product-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .product-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.9); font-family: 'Montserrat', sans-serif; font-size: 40px; font-weight: 800; letter-spacing: 2px; }
+        .product-badge { position: absolute; top: 12px; left: 12px; background: var(--accent-color); color: var(--primary-color); font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .product-body { padding: 18px 20px 20px; display: flex; flex-direction: column; }
+        .product-category { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--light-text); font-weight: 600; margin-bottom: 4px; }
+        .product-title { font-size: 16px; margin-bottom: 8px; color: var(--primary-color); word-break: break-word; }
+        .product-desc { color: var(--light-text); font-size: 13px; margin-bottom: 14px; white-space: pre-line; word-break: break-word; }
+        .product-prices { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+        .product-price { font-size: 20px; font-weight: 700; color: var(--primary-color); font-family: 'Montserrat', sans-serif; }
+        .product-old-price { color: var(--light-text); text-decoration: line-through; font-size: 14px; }
+        .product-btn { background: var(--primary-color); color: #fff; border-radius: 8px; padding: 10px; text-align: center; font-weight: 600; margin-top: 12px; font-size: 14px; }
+        .preview-hidden-note { margin-top: 10px; font-size: 13px; color: #8a6d00; background: var(--warning-bg); border-radius: 8px; padding: 8px 10px; }
+
+        /* --- Уведомления --- */
+        .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); z-index: 2000; background: var(--primary-color); color: #fff; border-radius: 12px; padding: 12px 12px 12px 18px; display: flex; align-items: center; gap: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: calc(100% - 32px); opacity: 0; visibility: hidden; transition: 0.25s; font-size: 14px; }
+        .toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+        .toast.error { background: #a71d2a; }
+        .toast button { background: var(--accent-color); color: var(--primary-color); border: none; border-radius: 8px; padding: 7px 12px; font-weight: 700; cursor: pointer; }
+
+        /* --- Адаптация под телефон --- */
+        @media (max-width: 860px) {
+            .editor-grid { grid-template-columns: 1fr; }
+            .editor-preview { position: static; max-width: 340px; }
+            .p-row { grid-template-columns: 34px 64px minmax(0, 1fr); grid-template-areas: "order thumb info" "order price switch" "actions actions actions"; row-gap: 10px; }
+            .order-btns { grid-area: order; }
+            .p-thumb { grid-area: thumb; width: 64px; height: 48px; }
+            .p-info { grid-area: info; }
+            .p-price { grid-row: 2; grid-column: 2 / 4; white-space: nowrap; align-self: center; }
+            .switch { grid-area: switch; justify-self: end; }
+            .p-actions { grid-area: actions; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 10px; }
+        }
+        @media (max-width: 640px) {
+            .topbar .container { height: auto; padding-top: 12px; padding-bottom: 12px; flex-wrap: wrap; }
+            .user-label { display: none; }
+            .publishbar .container { flex-direction: column; align-items: stretch; }
+            .publish-actions .btn { flex: 1; }
+            .toolbar-right { width: 100%; }
+            .toolbar input[type=search] { flex: 1; width: auto; min-width: 0; }
+            .toolbar-right .btn.primary { width: 100%; }
+            .field-row { grid-template-columns: 1fr; gap: 0; }
+            .modal { padding: 0; align-items: flex-end; }
+            .modal-panel, .modal-panel.wide { max-height: 100dvh; border-radius: 16px 16px 0 0; }
+            .modal-head, .modal-body, .modal-foot { padding-left: 18px; padding-right: 18px; }
+            .modal-foot .btn { flex: 1; }
+            .login-card { padding: 26px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===================== ЭКРАН ВХОДА ===================== -->
+    <div class="login-wrap" id="loginView">
+        <div class="login-card">
+            <div class="login-logo">NIKA BUSINESS</div>
+            <h1>Админ-панель</h1>
+            <p>Товары витрины хранятся в файле <code>products.json</code> в репозитории GitHub. Чтобы сохранять изменения, войдите с помощью токена доступа GitHub.</p>
+
+            <form id="loginForm" novalidate>
+                <div class="form-msg error" id="loginError" hidden></div>
+                <div class="field">
+                    <label for="tokenInput">Токен GitHub</label>
+                    <div class="input-with-btn">
+                        <input type="password" id="tokenInput" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+                        <button type="button" id="toggleTokenBtn">Показать</button>
+                    </div>
+                </div>
+                <label class="check" style="margin-bottom: 16px;"><input type="checkbox" id="rememberInput" checked> Запомнить на этом устройстве</label>
+                <button class="btn primary" type="submit" id="loginBtn">Войти</button>
+            </form>
+            <div class="login-alt"><button class="btn link" id="demoBtn" type="button">Посмотреть админку в демо-режиме (без сохранения)</button></div>
+
+            <details class="howto">
+                <summary>Как получить токен (2 минуты)</summary>
+                <ol>
+                    <li>Откройте <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Fine-grained tokens → Generate new token</a>.</li>
+                    <li><b>Token name</b>: «Nika admin», <b>Expiration</b>: 90 дней.</li>
+                    <li><b>Repository access</b> → Only select repositories → <b id="howtoRepo">nika-business</b>.</li>
+                    <li><b>Permissions</b> → Repository permissions → <b>Contents</b> → <b>Read and write</b>.</li>
+                    <li>Нажмите <b>Generate token</b>, скопируйте токен и вставьте в поле выше.</li>
+                </ol>
+                <p class="muted">Токен хранится только в этом браузере и даёт доступ только к одному репозиторию. Никому его не пересылайте.</p>
+            </details>
+            <details class="howto">
+                <summary>Настройки репозитория</summary>
+                <div class="field"><label for="ownerInput">Владелец (логин GitHub)</label><input type="text" id="ownerInput" spellcheck="false"></div>
+                <div class="field"><label for="repoInput">Репозиторий</label><input type="text" id="repoInput" spellcheck="false"></div>
+                <div class="field"><label for="branchInput">Ветка</label><input type="text" id="branchInput" spellcheck="false"></div>
+            </details>
+        </div>
+    </div>
+
+    <!-- ===================== АДМИНКА ===================== -->
+    <div id="appView" hidden>
+        <header class="topbar">
+            <div class="container">
+                <div class="brand">Nika Business<span>Админ-панель</span></div>
+                <div class="topbar-actions">
+                    <span class="user-label" id="userLabel"></span>
+                    <a class="btn ghost" id="siteLink" target="_blank" rel="noopener">Открыть витрину ↗</a>
+                    <button class="btn ghost" id="logoutBtn" type="button">Выйти</button>
+                </div>
+            </div>
+        </header>
+        <div class="demo-banner" id="demoBanner" hidden>Демо-режим: можно пробовать всё, но изменения не сохраняются в GitHub и пропадут после обновления страницы.</div>
+
+        <div class="publishbar" id="publishBar">
+            <div class="container">
+                <div class="publish-status"><span class="status-dot"></span><span id="publishStatus">Загрузка…</span></div>
+                <div class="publish-actions">
+                    <button class="btn ghost" id="discardBtn" type="button">Отменить изменения</button>
+                    <button class="btn primary" id="publishBtn" type="button">Опубликовать</button>
+                </div>
+            </div>
+        </div>
+
+        <main class="container">
+            <div class="toolbar">
+                <div>
+                    <h1>Товары</h1>
+                    <div class="stats" id="stats"></div>
+                </div>
+                <div class="toolbar-right">
+                    <input type="search" id="searchInput" placeholder="Поиск по названию, описанию…" aria-label="Поиск">
+                    <select id="categoryFilter" aria-label="Фильтр по категории"></select>
+                    <button class="btn primary" id="addBtn" type="button">＋ Добавить товар</button>
+                </div>
+            </div>
+            <div class="filter-hint" id="filterHint" hidden>Порядок товаров можно менять, когда поиск и фильтр сброшены.</div>
+            <div class="product-list" id="productList"><div class="loading-state">Загружаем каталог…</div></div>
+        </main>
+    </div>
+
+    <!-- ===================== РЕДАКТОР ТОВАРА ===================== -->
+    <div class="modal" id="editorModal" hidden role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+        <div class="modal-backdrop" data-close></div>
+        <form class="modal-panel wide" id="editorForm" novalidate>
+            <div class="modal-head">
+                <h2 id="editorTitle">Новый товар</h2>
+                <button class="modal-close" type="button" data-close aria-label="Закрыть">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="editor-grid">
+                    <div>
+                        <div class="field" id="f-title">
+                            <label for="titleInput">Название * <span class="counter" id="titleCounter">0/80</span></label>
+                            <input type="text" id="titleInput" maxlength="80" placeholder="Например: Бухгалтерское сопровождение">
+                            <div class="field-error">Введите название (от 2 символов)</div>
+                        </div>
+                        <div class="field" id="f-desc">
+                            <label for="descInput">Описание * <span class="counter" id="descCounter">0/300</span></label>
+                            <textarea id="descInput" maxlength="300" rows="4" placeholder="Коротко: что входит в услугу и какой результат получит клиент"></textarea>
+                            <div class="field-error">Добавьте описание (от 10 символов)</div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field" id="f-price">
+                                <label for="priceInput">Цена, ₸ *</label>
+                                <input type="number" id="priceInput" min="0" step="1" inputmode="numeric" placeholder="150000">
+                                <div class="field-error">Укажите цену целым числом от 0</div>
+                            </div>
+                            <div class="field" id="f-old">
+                                <label for="oldPriceInput">Старая цена, ₸</label>
+                                <input type="number" id="oldPriceInput" min="0" step="1" inputmode="numeric" placeholder="необязательно">
+                                <div class="field-error">Старая цена должна быть больше текущей</div>
+                                <div class="field-hint" id="discountHint"></div>
+                            </div>
+                        </div>
+                        <div class="field-row">
+                            <div class="field" id="f-cat">
+                                <label for="categoryInput">Категория</label>
+                                <input type="text" id="categoryInput" maxlength="40" list="categoryList" placeholder="Например: Консалтинг">
+                                <datalist id="categoryList"></datalist>
+                                <div class="field-hint">По категориям на витрине появляются фильтры</div>
+                            </div>
+                            <div class="field" id="f-badge">
+                                <label for="badgeInput">Метка на фото</label>
+                                <input type="text" id="badgeInput" maxlength="20" list="badgeList" placeholder="Без метки">
+                                <datalist id="badgeList"><option value="Хит"><option value="Новинка"><option value="Скидка"><option value="Акция"></datalist>
+                            </div>
+                        </div>
+
+                        <div class="field" id="f-photo">
+                            <div class="field-label">Фото</div>
+                            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Выбрать фото">
+                                <img id="photoPreview" alt="" hidden>
+                                <div class="dropzone-empty" id="dropzoneEmpty"><b>Перетащите фото сюда</b><br>или нажмите, чтобы выбрать файл<br><small>JPG, PNG, WebP до 15 МБ — фото автоматически уменьшится до 1200 px</small></div>
+                                <div class="dropzone-busy" id="dropzoneBusy" hidden><span class="spinner"></span> Обрабатываем фото…</div>
+                            </div>
+                            <input type="file" id="fileInput" accept="image/*" hidden>
+                            <div class="photo-meta" id="photoMeta"></div>
+                            <div class="photo-actions">
+                                <button class="btn ghost" type="button" id="choosePhotoBtn">Выбрать файл</button>
+                                <button class="btn ghost" type="button" id="urlPhotoBtn">Вставить ссылку</button>
+                                <button class="btn ghost" type="button" id="removePhotoBtn" hidden>Удалить фото</button>
+                            </div>
+                            <div class="url-row" id="urlRow" hidden>
+                                <input type="url" id="imageUrlInput" placeholder="https://… ссылка на картинку" class="field-plain">
+                                <button class="btn primary" type="button" id="applyUrlBtn">Применить</button>
+                            </div>
+                            <div class="field-error" id="photoError"></div>
+                        </div>
+
+                        <label class="check"><input type="checkbox" id="visibleInput" checked> Показывать на витрине</label>
+                    </div>
+                    <aside class="editor-preview">
+                        <div class="preview-label">Так товар выглядит на витрине</div>
+                        <div id="previewCard"></div>
+                    </aside>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn ghost" type="button" data-close>Отмена</button>
+                <button class="btn primary" type="submit" id="editorSaveBtn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ===================== ПОДТВЕРЖДЕНИЕ ===================== -->
+    <div class="modal" id="confirmModal" hidden role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+        <div class="modal-backdrop" data-cancel></div>
+        <div class="modal-panel">
+            <div class="modal-head"><h2 id="confirmTitle">Подтвердите</h2></div>
+            <div class="modal-body"><p class="confirm-text" id="confirmText"></p></div>
+            <div class="modal-foot">
+                <button class="btn ghost" type="button" id="confirmCancel" data-cancel>Отмена</button>
+                <button class="btn ghost" type="button" id="confirmAlt" hidden></button>
+                <button class="btn primary" type="button" id="confirmOk">ОК</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastText"></span><button type="button" id="toastAction" hidden></button></div>
+
+    <script>
+    /* =====================================================================
+       КАК РАБОТАЕТ АДМИНКА
+       1. Каталог хранится в файле products.json в репозитории GitHub, фото — в папке images/.
+       2. Админка читает и записывает эти файлы через GitHub API, используя ваш токен.
+       3. Все правки сначала копятся как черновик (он сохраняется в браузере),
+          кнопка «Опубликовать» отправляет их одним коммитом.
+       4. После коммита GitHub Pages сам пересобирает сайт (обычно 30–90 секунд),
+          и витрина index.html показывает новый каталог.
+       ===================================================================== */
+
+    const DEFAULT_CFG = { owner: 'JabaMentsos71', repo: 'nika-business', branch: 'main' };
+    const PRODUCTS_PATH = 'products.json';
+    const IMAGES_DIR = 'images';
+    const KEYS = { token: 'nb_admin_token', cfg: 'nb_admin_cfg', draft: 'nb_admin_draft_v1' };
+    const LIMITS = { title: 80, desc: 300, category: 40, badge: 20, maxPrice: 1000000000, maxFileMb: 15, maxSide: 1200, targetKb: 900 };
+
+    const state = {
+        mode: null,               // 'github' | 'demo'
+        cfg: { ...DEFAULT_CFG },
+        token: '',
+        user: '',
+        base: { sha: null, products: [] },   // то, что сейчас опубликовано
+        products: [],                         // рабочая копия с правками
+        pendingImages: {},                    // новые фото, ещё не загруженные в GitHub: путь -> { dataUrl, base64, size }
+        recentImages: {},                     // недавно опубликованные фото (пока Pages их не раздаёт)
+        busy: false,
+        liveTimer: null,
+        lastDeleted: null
+    };
+
+    /* ---------------------- Мелкие помощники ---------------------- */
+    const $ = id => document.getElementById(id);
+    const clone = v => JSON.parse(JSON.stringify(v));
+
+    function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
+    function formatPrice(v) { return Number(v || 0).toLocaleString('ru-RU') + ' ₸'; }
+    function initials(t) { return String(t || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?'; }
+    function formatSize(bytes) { return bytes >= 1048576 ? (bytes / 1048576).toFixed(1) + ' МБ' : Math.max(1, Math.round(bytes / 1024)) + ' КБ'; }
+    function timeNow() { return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); }
+    function newId() { return 'p-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+    function storageGet(key) {
+        try { return localStorage.getItem(key) ?? sessionStorage.getItem(key); } catch (e) { return null; }
+    }
+    function storageSet(key, value, persistent = true) {
+        try {
+            (persistent ? localStorage : sessionStorage).setItem(key, value);
+            (persistent ? sessionStorage : localStorage).removeItem(key);
+            return true;
+        } catch (e) { return false; }
+    }
+    function storageRemove(key) {
+        try { localStorage.removeItem(key); sessionStorage.removeItem(key); } catch (e) { /* ignore */ }
+    }
+
+    // Латиница для имени файла фото: «Аудит бизнеса» -> audit-biznesa
+    function slugify(text) {
+        const map = { а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'ts',ч:'ch',ш:'sh',щ:'sch',ъ:'',ы:'y',ь:'',э:'e',ю:'yu',я:'ya',ә:'a',ғ:'g',қ:'k',ң:'n',ө:'o',ұ:'u',ү:'u',һ:'h',і:'i' };
+        return String(text || '').toLowerCase().split('').map(ch => map[ch] ?? ch).join('')
+            .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'product';
+    }
+
+    function utf8ToBase64(str) {
+        const bytes = new TextEncoder().encode(str);
+        let binary = '';
+        for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+        return btoa(binary);
+    }
+    function base64ToUtf8(b64) {
+        const binary = atob(String(b64).replace(/\s/g, ''));
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        return new TextDecoder().decode(bytes);
+    }
+
+    function normalizeProduct(p) {
+        const price = Math.max(0, Math.round(Number(p && p.price) || 0));
+        const oldPrice = Math.round(Number(p && p.oldPrice) || 0);
+        return {
+            id: String((p && p.id) || newId()),
+            title: String((p && p.title) || '').trim().slice(0, LIMITS.title),
+            description: String((p && p.description) || '').trim().slice(0, LIMITS.desc),
+            price,
+            oldPrice: oldPrice > price ? oldPrice : null,
+            category: String((p && p.category) || '').trim().slice(0, LIMITS.category),
+            badge: String((p && p.badge) || '').trim().slice(0, LIMITS.badge),
+            image: String((p && p.image) || '').trim(),
+            visible: !(p && p.visible === false)
+        };
+    }
+
+    // Адрес витрины: админка лежит рядом с index.html, поэтому берём ту же папку.
+    // Если файл открыт прямо с диска (file://), собираем адрес GitHub Pages по логину и репозиторию.
+    function siteBase() {
+        if (/^https?:$/.test(location.protocol)) return new URL('.', location.href).href;
+        const owner = state.cfg.owner.toLowerCase();
+        if (state.cfg.repo.toLowerCase() === owner + '.github.io') return `https://${owner}.github.io/`;
+        return `https://${owner}.github.io/${state.cfg.repo}/`;
+    }
+
+    function resolveImage(path) {
+        if (!path) return '';
+        if (state.pendingImages[path]) return state.pendingImages[path].dataUrl;
+        if (state.recentImages[path]) return state.recentImages[path];
+        if (/^https?:\/\//i.test(path)) return path;
+        if (path.startsWith(IMAGES_DIR + '/')) return siteBase() + path;
+        return '';
+    }
+
+    /* ---------------------- Уведомления и подтверждения ---------------------- */
+    let toastTimer = null;
+    function toast(message, { error = false, actionLabel = '', onAction = null, timeout = 4000 } = {}) {
+        const el = $('toast');
+        $('toastText').textContent = message;
+        el.classList.toggle('error', error);
+        const btn = $('toastAction');
+        btn.hidden = !actionLabel;
+        btn.textContent = actionLabel;
+        btn.onclick = () => { el.classList.remove('show'); if (onAction) onAction(); };
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), timeout);
+    }
+
+    // Своё окно подтверждения вместо confirm(): работает одинаково на всех устройствах
+    function confirmDialog({ title = 'Подтвердите', text = '', ok = 'ОК', cancel = 'Отмена', alt = '', danger = false }) {
+        return new Promise(resolve => {
+            const modal = $('confirmModal');
+            $('confirmTitle').textContent = title;
+            $('confirmText').textContent = text;
+            $('confirmOk').textContent = ok;
+            $('confirmOk').className = 'btn ' + (danger ? 'danger' : 'primary');
+            $('confirmCancel').textContent = cancel;
+            $('confirmAlt').hidden = !alt;
+            $('confirmAlt').textContent = alt;
+            modal.hidden = false;
+            $('confirmOk').focus();
+            const finish = value => {
+                modal.hidden = true;
+                $('confirmOk').onclick = $('confirmAlt').onclick = null;
+                modal.querySelectorAll('[data-cancel]').forEach(el => el.onclick = null);
+                resolve(value);
+            };
+            $('confirmOk').onclick = () => finish('ok');
+            $('confirmAlt').onclick = () => finish('alt');
+            modal.querySelectorAll('[data-cancel]').forEach(el => el.onclick = () => finish('cancel'));
+            modal._cancel = () => finish('cancel');
+        });
+    }
+
+    /* ---------------------- GitHub API ---------------------- */
+    async function gh(path, { method = 'GET', body } = {}) {
+        let res;
+        try {
+            res = await fetch('https://api.github.com' + path, {
+                method,
+                cache: 'no-store',
+                headers: {
+                    'Accept': 'application/vnd.github+json',
+                    'Authorization': 'Bearer ' + state.token,
+                    'X-GitHub-Api-Version': '2022-11-28',
+                    ...(body ? { 'Content-Type': 'application/json' } : {})
+                },
+                body: body ? JSON.stringify(body) : undefined
+            });
+        } catch (e) {
+            const err = new Error('Нет соединения с GitHub. Проверьте интернет.');
+            err.status = 0;
+            throw err;
+        }
+        let data = null;
+        try { data = await res.json(); } catch (e) { /* пустой ответ */ }
+        if (!res.ok) {
+            const err = new Error((data && data.message) || ('HTTP ' + res.status));
+            err.status = res.status;
+            err.data = data;
+            throw err;
+        }
+        return data;
+    }
+
+    function explainError(err) {
+        const s = err && err.status;
+        const msg = String((err && err.message) || '');
+        if (s === 0) return msg;
+        if (s === 401) return 'Токен не подходит или истёк. Создайте новый токен и войдите заново.';
+        if (s === 403 && /rate limit/i.test(msg)) return 'GitHub временно ограничил число запросов. Подождите несколько минут.';
+        if (s === 403) return 'У токена нет права на запись. При создании токена выберите Contents: Read and write для репозитория ' + state.cfg.repo + '.';
+        if (s === 404) return `Репозиторий ${state.cfg.owner}/${state.cfg.repo} не найден или токен не даёт к нему доступа. Проверьте настройки репозитория и доступ токена.`;
+        if (s === 409) return 'Репозиторий пуст или ветка недоступна (' + msg + ').';
+        if (s === 422) return 'GitHub отклонил изменение: ' + msg;
+        return 'Ошибка GitHub: ' + msg;
+    }
+
+    const repoPath = () => `/repos/${encodeURIComponent(state.cfg.owner)}/${encodeURIComponent(state.cfg.repo)}`;
+
+    async function fetchCatalogFromGitHub(ref) {
+        try {
+            const file = await gh(`${repoPath()}/contents/${PRODUCTS_PATH}?ref=${encodeURIComponent(ref || state.cfg.branch)}`);
+            const data = JSON.parse(base64ToUtf8(file.content));
+            return { sha: file.sha, products: (Array.isArray(data.products) ? data.products : []).map(normalizeProduct) };
+        } catch (e) {
+            if (e.status === 404) return { sha: null, products: [] };
+            if (e instanceof SyntaxError) throw new Error('Файл products.json повреждён: ' + e.message);
+            throw e;
+        }
+    }
+
+    async function fetchCatalogFromSite() {
+        const res = await fetch(siteBase() + PRODUCTS_PATH + '?v=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('Не удалось загрузить каталог с сайта (HTTP ' + res.status + ')');
+        const data = await res.json();
+        return { sha: 'demo', products: (Array.isArray(data.products) ? data.products : []).map(normalizeProduct) };
+    }
+
+    /* ---------------------- Вход и выход ---------------------- */
+    function loadCfg() {
+        try { state.cfg = { ...DEFAULT_CFG, ...(JSON.parse(storageGet(KEYS.cfg) || '{}')) }; } catch (e) { state.cfg = { ...DEFAULT_CFG }; }
+        $('ownerInput').value = state.cfg.owner;
+        $('repoInput').value = state.cfg.repo;
+        $('branchInput').value = state.cfg.branch;
+        $('howtoRepo').textContent = state.cfg.repo;
+    }
+    function readCfgInputs() {
+        state.cfg = {
+            owner: $('ownerInput').value.trim() || DEFAULT_CFG.owner,
+            repo: $('repoInput').value.trim() || DEFAULT_CFG.repo,
+            branch: $('branchInput').value.trim() || DEFAULT_CFG.branch
+        };
+        storageSet(KEYS.cfg, JSON.stringify(state.cfg));
+        $('howtoRepo').textContent = state.cfg.repo;
+    }
+
+    function showLoginError(text) {
+        $('loginError').textContent = text;
+        $('loginError').hidden = !text;
+    }
+
+    async function loginWithToken(token, remember) {
+        state.token = token;
+        const repo = await gh(repoPath());
+        if (repo.permissions && repo.permissions.push === false) {
+            const err = new Error('no push'); err.status = 403; throw err;
+        }
+        try { state.user = (await gh('/user')).login || ''; } catch (e) { state.user = ''; }
+        storageSet(KEYS.token, token, remember);
+        state.mode = 'github';
+        await enterApp();
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        readCfgInputs();
+        const token = $('tokenInput').value.trim();
+        if (!token) { showLoginError('Вставьте токен GitHub.'); $('tokenInput').focus(); return; }
+        if (/\s/.test(token)) { showLoginError('В токене есть пробелы — скопируйте его заново целиком.'); return; }
+        showLoginError('');
+        setButtonBusy($('loginBtn'), true, 'Проверяем…');
+        try {
+            await loginWithToken(token, $('rememberInput').checked);
+            $('tokenInput').value = '';
+        } catch (err) {
+            state.token = '';
+            showLoginError(explainError(err));
+        } finally {
+            setButtonBusy($('loginBtn'), false, 'Войти');
+        }
+    }
+
+    async function enterDemo() {
+        readCfgInputs();
+        state.mode = 'demo';
+        state.token = '';
+        state.user = '';
+        await enterApp();
+    }
+
+    async function logout() {
+        if (isDirty() && state.mode === 'github') {
+            const answer = await confirmDialog({ title: 'Выйти из админки?', text: 'Неопубликованные изменения останутся черновиком на этом устройстве — после входа их можно будет опубликовать.', ok: 'Выйти' });
+            if (answer !== 'ok') return;
+        }
+        storageRemove(KEYS.token);
+        clearInterval(state.liveTimer);
+        state.mode = null; state.token = ''; state.user = '';
+        state.products = []; state.base = { sha: null, products: [] }; state.pendingImages = {};
+        $('appView').hidden = true;
+        $('loginView').hidden = false;
+        showLoginError('');
+    }
+
+    function setButtonBusy(btn, busy, label) {
+        btn.disabled = busy;
+        btn.innerHTML = busy ? `<span class="spinner"></span> ${escapeHtml(label)}` : escapeHtml(label);
+    }
+
+    async function enterApp() {
+        $('loginView').hidden = true;
+        $('appView').hidden = false;
+        $('demoBanner').hidden = state.mode !== 'demo';
+        $('userLabel').textContent = state.mode === 'github' ? (state.user ? '@' + state.user : '') + ' · ' + state.cfg.owner + '/' + state.cfg.repo : '';
+        $('siteLink').href = siteBase();
+        $('productList').innerHTML = '<div class="loading-state">Загружаем каталог…</div>';
+        setPublishStatus('busy', 'Загружаем каталог…');
+        try {
+            const catalog = state.mode === 'demo' ? await fetchCatalogFromSite() : await fetchCatalogFromGitHub();
+            state.base = { sha: catalog.sha, products: catalog.products };
+            state.products = clone(catalog.products);
+            state.pendingImages = {};
+            if (state.mode === 'github') await restoreDraft();
+            render();
+        } catch (err) {
+            console.error(err);
+            $('productList').innerHTML = `<div class="empty-state"><h3>Не удалось загрузить каталог</h3><p>${escapeHtml(err.status !== undefined ? explainError(err) : err.message)}</p><button class="btn primary" type="button" onclick="enterApp()">Попробовать снова</button></div>`;
+            setPublishStatus('failed', 'Каталог не загружен');
+        }
+    }
+
+    /* ---------------------- Черновик ---------------------- */
+    const repoKey = () => `${state.cfg.owner}/${state.cfg.repo}@${state.cfg.branch}`;
+    let draftWarned = false;
+
+    function saveDraft() {
+        if (state.mode !== 'github') return;
+        if (!isDirty()) { storageRemove(KEYS.draft); return; }
+        const draft = { repoKey: repoKey(), baseSha: state.base.sha, products: state.products, pendingImages: state.pendingImages, savedAt: Date.now() };
+        if (!storageSet(KEYS.draft, JSON.stringify(draft)) && !draftWarned) {
+            draftWarned = true;
+            toast('Черновик слишком большой для памяти браузера — опубликуйте изменения, чтобы не потерять фото.', { error: true, timeout: 7000 });
+        }
+    }
+
+    async function restoreDraft() {
+        let draft = null;
+        try { draft = JSON.parse(storageGet(KEYS.draft) || 'null'); } catch (e) { draft = null; }
+        if (!draft || draft.repoKey !== repoKey() || !Array.isArray(draft.products)) return;
+        if (draft.baseSha !== state.base.sha) {
+            const answer = await confirmDialog({
+                title: 'Найден черновик',
+                text: `На этом устройстве есть неопубликованные изменения от ${new Date(draft.savedAt).toLocaleString('ru-RU')}. С тех пор каталог на сайте изменился. Если восстановить черновик и опубликовать его, он заменит текущий каталог.`,
+                ok: 'Восстановить черновик', cancel: 'Удалить черновик'
+            });
+            if (answer !== 'ok') { storageRemove(KEYS.draft); return; }
+        }
+        state.products = draft.products.map(normalizeProduct);
+        state.pendingImages = draft.pendingImages || {};
+        toast('Восстановлены неопубликованные изменения');
+    }
+
+    /* ---------------------- Сравнение с опубликованной версией ---------------------- */
+    function isDirty() {
+        return JSON.stringify(state.products) !== JSON.stringify(state.base.products);
+    }
+
+    function diffSummary() {
+        const baseById = new Map(state.base.products.map(p => [p.id, JSON.stringify(p)]));
+        const curIds = new Set(state.products.map(p => p.id));
+        let added = 0, changed = 0, removed = 0;
+        state.products.forEach(p => {
+            if (!baseById.has(p.id)) added++;
+            else if (baseById.get(p.id) !== JSON.stringify(p)) changed++;
+        });
+        state.base.products.forEach(p => { if (!curIds.has(p.id)) removed++; });
+        const sameSet = state.products.filter(p => baseById.has(p.id)).map(p => p.id);
+        const baseOrder = state.base.products.filter(p => curIds.has(p.id)).map(p => p.id);
+        const reordered = sameSet.join('|') !== baseOrder.join('|');
+        const parts = [];
+        if (added) parts.push('добавлено ' + added);
+        if (changed) parts.push('изменено ' + changed);
+        if (removed) parts.push('удалено ' + removed);
+        if (reordered) parts.push('изменён порядок');
+        return { added, changed, removed, reordered, text: parts.join(', ') };
+    }
+
+    function rowStatus(p) {
+        const base = state.base.products.find(b => b.id === p.id);
+        if (!base) return 'new';
+        return JSON.stringify(base) !== JSON.stringify(p) ? 'changed' : '';
+    }
+
+    /* ---------------------- Отрисовка ---------------------- */
+    function setPublishStatus(kind, text) {
+        const bar = $('publishBar');
+        bar.classList.remove('dirty', 'busy', 'failed');
+        if (kind) bar.classList.add(kind);
+        $('publishStatus').innerHTML = text;
+    }
+
+    function updatePublishBar() {
+        if (state.busy) return;
+        const dirty = isDirty();
+        $('discardBtn').hidden = !dirty;
+        $('publishBtn').disabled = !dirty;
+        if (dirty) {
+            clearInterval(state.liveTimer);
+            $('publishBar').dataset.keepStatus = '';
+            setPublishStatus('dirty', 'Есть неопубликованные изменения: ' + escapeHtml(diffSummary().text) + '. Покупатели увидят их после публикации.');
+        } else if (!$('publishBar').dataset.keepStatus) {
+            setPublishStatus('', state.mode === 'demo' ? 'Демо-режим: каталог загружен с сайта' : '✓ Витрина совпадает с админкой — все изменения опубликованы');
+        }
+    }
+
+    function render() {
+        renderToolbar();
+        renderList();
+        updatePublishBar();
+        saveDraft();
+    }
+
+    function renderToolbar() {
+        const total = state.products.length;
+        const visible = state.products.filter(p => p.visible).length;
+        $('stats').textContent = `Всего: ${total} · На витрине: ${visible} · Скрыто: ${total - visible}`;
+
+        const cats = [...new Set(state.products.map(p => p.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'ru'));
+        const select = $('categoryFilter');
+        const current = select.value;
+        select.innerHTML = '<option value="">Все категории</option>' + cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('') + '<option value="__none">Без категории</option>';
+        select.value = cats.includes(current) || current === '__none' ? current : '';
+        $('categoryList').innerHTML = cats.map(c => `<option value="${escapeHtml(c)}">`).join('');
+    }
+
+    function filteredProducts() {
+        const q = $('searchInput').value.trim().toLowerCase();
+        const cat = $('categoryFilter').value;
+        return state.products.filter(p => {
+            if (cat === '__none' && p.category) return false;
+            if (cat && cat !== '__none' && p.category !== cat) return false;
+            if (q && !(p.title + ' ' + p.description + ' ' + p.category).toLowerCase().includes(q)) return false;
+            return true;
+        });
+    }
+
+    function renderList(flashId) {
+        const list = $('productList');
+        const items = filteredProducts();
+        const filtering = items.length !== state.products.length || $('searchInput').value.trim() || $('categoryFilter').value;
+        $('filterHint').hidden = !filtering || state.products.length < 2;
+
+        if (state.products.length === 0) {
+            list.innerHTML = `<div class="empty-state"><h3>Каталог пуст</h3><p>Добавьте первый товар — он появится на витрине после публикации.</p><button class="btn primary" type="button" onclick="openEditor()">＋ Добавить товар</button></div>`;
+            return;
+        }
+        if (items.length === 0) {
+            list.innerHTML = `<div class="empty-state"><h3>Ничего не найдено</h3><p>Измените запрос или сбросьте фильтр.</p><button class="btn ghost" type="button" onclick="resetFilters()">Сбросить фильтры</button></div>`;
+            return;
+        }
+
+        list.innerHTML = items.map(p => {
+            const index = state.products.indexOf(p);
+            const status = rowStatus(p);
+            const img = resolveImage(p.image);
+            const id = escapeHtml(p.id);
+            return `
+            <div class="p-row ${p.visible ? '' : 'is-hidden'} ${p.id === flashId ? 'flash' : ''}" data-id="${id}">
+                <div class="order-btns">
+                    <button class="icon-btn" type="button" data-action="up" title="Выше" aria-label="Переместить выше" ${filtering || index === 0 ? 'disabled' : ''}>↑</button>
+                    <button class="icon-btn" type="button" data-action="down" title="Ниже" aria-label="Переместить ниже" ${filtering || index === state.products.length - 1 ? 'disabled' : ''}>↓</button>
+                </div>
+                <div class="p-thumb">${img ? `<img src="${escapeHtml(img)}" alt="" loading="lazy" onerror="this.replaceWith(document.createTextNode('${escapeHtml(initials(p.title))}'))">` : escapeHtml(initials(p.title))}</div>
+                <div class="p-info">
+                    <div class="p-title">${escapeHtml(p.title || 'Без названия')}
+                        ${status === 'new' ? '<span class="tag new">новый</span>' : ''}
+                        ${status === 'changed' ? '<span class="tag changed">изменён</span>' : ''}
+                        ${p.badge ? `<span class="tag badge">${escapeHtml(p.badge)}</span>` : ''}
+                    </div>
+                    <div class="p-meta">${escapeHtml(p.category || 'Без категории')}</div>
+                    <div class="p-desc">${escapeHtml(p.description)}</div>
+                </div>
+                <div class="p-price">${formatPrice(p.price)}${p.oldPrice ? `<s>${formatPrice(p.oldPrice)}</s>` : ''}</div>
+                <label class="switch" title="Показывать на витрине">
+                    <input type="checkbox" data-action="toggle" ${p.visible ? 'checked' : ''}>
+                    <span class="track"></span><span>${p.visible ? 'На витрине' : 'Скрыт'}</span>
+                </label>
+                <div class="p-actions">
+                    <button class="btn ghost" type="button" data-action="edit">Изменить</button>
+                    <button class="btn ghost" type="button" data-action="duplicate" title="Создать копию">Копия</button>
+                    <button class="btn ghost del" type="button" data-action="delete">Удалить</button>
+                </div>
+            </div>`;
+        }).join('');
+
+        if (flashId) {
+            const row = list.querySelector(`[data-id="${CSS.escape(flashId)}"]`);
+            if (row) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }
+
+    function resetFilters() {
+        $('searchInput').value = '';
+        $('categoryFilter').value = '';
+        renderList();
+    }
+
+    /* ---------------------- Действия со списком ---------------------- */
+    async function handleListClick(e) {
+        const actionEl = e.target.closest('[data-action]');
+        if (!actionEl || state.busy) return;
+        const row = actionEl.closest('.p-row');
+        if (!row) return;
+        const id = row.dataset.id;
+        const index = state.products.findIndex(p => p.id === id);
+        if (index < 0) return;
+        const action = actionEl.dataset.action;
+
+        if (action === 'toggle') {
+            state.products[index].visible = actionEl.checked;
+            render();
+            toast(actionEl.checked ? 'Товар будет показан на витрине' : 'Товар будет скрыт с витрины');
+        } else if (action === 'up' || action === 'down') {
+            const target = action === 'up' ? index - 1 : index + 1;
+            if (target < 0 || target >= state.products.length) return;
+            [state.products[index], state.products[target]] = [state.products[target], state.products[index]];
+            render();
+            const btn = $('productList').querySelector(`[data-id="${CSS.escape(id)}"] [data-action="${action}"]`);
+            if (btn && !btn.disabled) btn.focus();
+        } else if (action === 'edit') {
+            openEditor(id);
+        } else if (action === 'duplicate') {
+            const copy = clone(state.products[index]);
+            copy.id = newId();
+            copy.title = (copy.title + ' (копия)').slice(0, LIMITS.title);
+            state.products.splice(index + 1, 0, copy);
+            render();
+            openEditor(copy.id);
+        } else if (action === 'delete') {
+            const p = state.products[index];
+            const answer = await confirmDialog({ title: 'Удалить товар?', text: `«${p.title}» исчезнет с витрины после публикации. До публикации удаление можно отменить.`, ok: 'Удалить', danger: true });
+            if (answer !== 'ok') return;
+            state.lastDeleted = { product: p, index };
+            state.products.splice(index, 1);
+            cleanupPendingImages();
+            render();
+            toast(`«${p.title}» удалён`, { actionLabel: 'Отменить', onAction: undoDelete, timeout: 7000 });
+        }
+    }
+
+    function undoDelete() {
+        const d = state.lastDeleted;
+        if (!d) return;
+        state.products.splice(Math.min(d.index, state.products.length), 0, d.product);
+        state.lastDeleted = null;
+        render();
+        renderList(d.product.id);
+    }
+
+    // Убираем из черновика фото, которые больше ни одному товару не нужны
+    function cleanupPendingImages() {
+        const used = new Set(state.products.map(p => p.image));
+        Object.keys(state.pendingImages).forEach(path => { if (!used.has(path)) delete state.pendingImages[path]; });
+    }
+
+    async function discardChanges() {
+        const answer = await confirmDialog({ title: 'Отменить все изменения?', text: 'Каталог вернётся к опубликованной версии. Неопубликованные правки и новые фото будут удалены.', ok: 'Отменить изменения', cancel: 'Оставить', danger: true });
+        if (answer !== 'ok') return;
+        state.products = clone(state.base.products);
+        state.pendingImages = {};
+        render();
+        toast('Изменения отменены');
+    }
+
+    /* ---------------------- Редактор товара ---------------------- */
+    const editor = { id: null, isNew: false, image: '', processed: null, initial: '' };
+
+    function openEditor(id) {
+        const p = id ? state.products.find(x => x.id === id) : null;
+        editor.id = p ? p.id : null;
+        editor.isNew = !p;
+        editor.image = p ? p.image : '';
+        editor.processed = null;
+
+        $('editorTitle').textContent = p ? 'Редактирование товара' : 'Новый товар';
+        $('editorSaveBtn').textContent = p ? 'Сохранить изменения' : 'Добавить товар';
+        $('titleInput').value = p ? p.title : '';
+        $('descInput').value = p ? p.description : '';
+        $('priceInput').value = p ? p.price : '';
+        $('oldPriceInput').value = p && p.oldPrice ? p.oldPrice : '';
+        $('categoryInput').value = p ? p.category : ($('categoryFilter').value && $('categoryFilter').value !== '__none' ? $('categoryFilter').value : '');
+        $('badgeInput').value = p ? p.badge : '';
+        $('visibleInput').checked = p ? p.visible : true;
+        $('urlRow').hidden = true;
+        $('imageUrlInput').value = '';
+        $('photoError').style.display = 'none';
+        document.querySelectorAll('#editorForm .field').forEach(f => f.classList.remove('invalid'));
+
+        updateEditorPhoto();
+        updateEditorPreview();
+        editor.initial = editorSnapshot();
+        $('editorModal').hidden = false;
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => $('titleInput').focus(), 50);
+    }
+
+    function editorSnapshot() {
+        return JSON.stringify([$('titleInput').value, $('descInput').value, $('priceInput').value, $('oldPriceInput').value, $('categoryInput').value, $('badgeInput').value, $('visibleInput').checked, editor.image, !!editor.processed]);
+    }
+
+    async function closeEditor(force) {
+        if (!force && editorSnapshot() !== editor.initial) {
+            const answer = await confirmDialog({ title: 'Закрыть без сохранения?', text: 'Внесённые в форму изменения будут потеряны.', ok: 'Закрыть', cancel: 'Продолжить редактирование' });
+            if (answer !== 'ok') return;
+        }
+        $('editorModal').hidden = true;
+        document.body.style.overflow = '';
+    }
+
+    function editorImageSrc() {
+        if (editor.processed) return editor.processed.dataUrl;
+        return resolveImage(editor.image);
+    }
+
+    function updateEditorPhoto() {
+        const src = editorImageSrc();
+        const img = $('photoPreview');
+        img.hidden = !src;
+        if (src) img.src = src; else img.removeAttribute('src');
+        $('dropzoneEmpty').hidden = !!src;
+        $('removePhotoBtn').hidden = !src;
+        $('choosePhotoBtn').textContent = src ? 'Заменить фото' : 'Выбрать файл';
+        let meta = '';
+        if (editor.processed) {
+            const pr = editor.processed;
+            meta = `Новое фото: ${pr.width}×${pr.height}, ${formatSize(pr.size)} (было ${formatSize(pr.originalSize)}). Загрузится в GitHub при публикации.`;
+        } else if (editor.image && state.pendingImages[editor.image]) {
+            meta = 'Фото ещё не опубликовано — загрузится в GitHub при публикации.';
+        } else if (/^https?:\/\//i.test(editor.image)) {
+            meta = 'Фото по внешней ссылке.';
+        } else if (editor.image) {
+            meta = 'Фото из репозитория: ' + editor.image;
+        }
+        $('photoMeta').textContent = meta;
+    }
+
+    function readEditorValues() {
+        const price = $('priceInput').value.trim();
+        const oldPrice = $('oldPriceInput').value.trim();
+        return {
+            title: $('titleInput').value.trim(),
+            description: $('descInput').value.trim(),
+            price: price === '' ? NaN : Number(price),
+            oldPrice: oldPrice === '' ? null : Number(oldPrice),
+            category: $('categoryInput').value.trim(),
+            badge: $('badgeInput').value.trim(),
+            visible: $('visibleInput').checked
+        };
+    }
+
+    function updateEditorPreview() {
+        const v = readEditorValues();
+        $('titleCounter').textContent = `${$('titleInput').value.length}/${LIMITS.title}`;
+        $('descCounter').textContent = `${$('descInput').value.length}/${LIMITS.desc}`;
+
+        const priceOk = Number.isFinite(v.price) && v.price >= 0;
+        const hasDiscount = priceOk && v.oldPrice && v.oldPrice > v.price;
+        $('discountHint').textContent = hasDiscount ? `Скидка ${Math.round((1 - v.price / v.oldPrice) * 100)}% — на витрине старая цена будет зачёркнута` : '';
+
+        const src = editorImageSrc();
+        $('previewCard').innerHTML = `
+            <div class="product-card">
+                <div class="product-media">
+                    <div class="product-placeholder">${escapeHtml(initials(v.title))}</div>
+                    ${src ? `<img src="${escapeHtml(src)}" alt="" onerror="this.remove()">` : ''}
+                    ${v.badge ? `<span class="product-badge">${escapeHtml(v.badge)}</span>` : ''}
+                </div>
+                <div class="product-body">
+                    ${v.category ? `<div class="product-category">${escapeHtml(v.category)}</div>` : ''}
+                    <h3 class="product-title">${escapeHtml(v.title || 'Название товара')}</h3>
+                    <p class="product-desc">${escapeHtml(v.description || 'Описание товара')}</p>
+                    <div class="product-prices">
+                        <div class="product-price">${priceOk ? formatPrice(Math.round(v.price)) : '— ₸'}</div>
+                        ${hasDiscount ? `<div class="product-old-price">${formatPrice(Math.round(v.oldPrice))}</div>` : ''}
+                    </div>
+                    <div class="product-btn">В корзину</div>
+                </div>
+            </div>
+            ${v.visible ? '' : '<div class="preview-hidden-note">Товар скрыт: на витрине его не будет видно.</div>'}`;
+    }
+
+    function validateEditor() {
+        const v = readEditorValues();
+        const errors = {
+            'f-title': v.title.length < 2,
+            'f-desc': v.description.length < 10,
+            'f-price': !(Number.isFinite(v.price) && v.price >= 0 && v.price <= LIMITS.maxPrice && Number.isInteger(v.price)),
+            'f-old': v.oldPrice !== null && !(Number.isFinite(v.oldPrice) && Number.isInteger(v.oldPrice) && v.oldPrice > v.price)
+        };
+        let first = null;
+        Object.entries(errors).forEach(([fid, bad]) => {
+            $(fid).classList.toggle('invalid', bad);
+            if (bad && !first) first = $(fid).querySelector('input, textarea');
+        });
+        if (first) first.focus();
+        return !first;
+    }
+
+    function saveEditor(e) {
+        e.preventDefault();
+        if ($('dropzoneBusy').hidden === false) { toast('Подождите, фото ещё обрабатывается'); return; }
+        if (!validateEditor()) return;
+        const v = readEditorValues();
+
+        let image = editor.image;
+        if (editor.processed) {
+            image = `${IMAGES_DIR}/${slugify(v.title)}-${Date.now().toString(36)}.${editor.processed.ext}`;
+            state.pendingImages[image] = { dataUrl: editor.processed.dataUrl, base64: editor.processed.base64, size: editor.processed.size };
+        }
+
+        const product = normalizeProduct({ id: editor.id || newId(), ...v, oldPrice: v.oldPrice, image });
+        if (editor.isNew) {
+            state.products.push(product);
+        } else {
+            const i = state.products.findIndex(p => p.id === editor.id);
+            if (i >= 0) state.products[i] = product; else state.products.push(product);
+        }
+        cleanupPendingImages();
+        closeEditor(true);
+        resetFiltersIfHidden(product);
+        render();
+        renderList(product.id);
+        toast(editor.isNew ? 'Товар добавлен. Нажмите «Опубликовать», чтобы он появился на сайте.' : 'Изменения сохранены в черновик');
+    }
+
+    function resetFiltersIfHidden(product) {
+        if (!filteredProducts().some(p => p.id === product.id)) { $('searchInput').value = ''; $('categoryFilter').value = ''; }
+    }
+
+    /* ---------------------- Обработка фото ---------------------- */
+    function loadImageFromFile(file) {
+        return new Promise((resolve, reject) => {
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+            img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Браузер не смог открыть этот файл. Сохраните фото в JPG или PNG и попробуйте снова.')); };
+            img.src = url;
+        });
+    }
+
+    function canvasToBlob(canvas, type, quality) {
+        return new Promise(resolve => canvas.toBlob(resolve, type, quality));
+    }
+
+    function blobToDataUrl(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    // Уменьшаем фото до 1200 px по большей стороне и сжимаем в WebP (или JPEG), чтобы сайт грузился быстро
+    async function processImageFile(file) {
+        if (!file) throw new Error('Файл не выбран');
+        if (!/^image\//.test(file.type) && !/\.(jpe?g|png|webp|gif|bmp|avif)$/i.test(file.name)) throw new Error('Это не изображение. Выберите файл JPG, PNG или WebP.');
+        if (file.size > LIMITS.maxFileMb * 1048576) throw new Error(`Файл больше ${LIMITS.maxFileMb} МБ. Выберите фото поменьше.`);
+
+        const img = await loadImageFromFile(file);
+        const scale = Math.min(1, LIMITS.maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+        const width = Math.max(1, Math.round(img.naturalWidth * scale));
+        const height = Math.max(1, Math.round(img.naturalHeight * scale));
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingQuality = 'high';
+
+        let blob = null, ext = 'webp';
+        for (const q of [0.85, 0.75, 0.6]) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            blob = await canvasToBlob(canvas, 'image/webp', q);
+            if (!blob || blob.type !== 'image/webp') break;
+            if (blob.size <= LIMITS.targetKb * 1024) break;
+        }
+        if (!blob || blob.type !== 'image/webp') {
+            // Браузер не умеет WebP — сохраняем JPEG на белом фоне
+            ext = 'jpg';
+            for (const q of [0.85, 0.75, 0.6]) {
+                ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, width, height);
+                ctx.drawImage(img, 0, 0, width, height);
+                blob = await canvasToBlob(canvas, 'image/jpeg', q);
+                if (blob && blob.size <= LIMITS.targetKb * 1024) break;
+            }
+        }
+        if (!blob) throw new Error('Не удалось обработать фото');
+        const dataUrl = await blobToDataUrl(blob);
+        return { dataUrl, base64: dataUrl.split(',')[1], ext, width, height, size: blob.size, originalSize: file.size };
+    }
+
+    async function handlePhotoFile(file) {
+        $('photoError').style.display = 'none';
+        $('dropzoneBusy').hidden = false;
+        try {
+            editor.processed = await processImageFile(file);
+            $('urlRow').hidden = true;
+        } catch (err) {
+            $('photoError').textContent = err.message;
+            $('photoError').style.display = 'block';
+        } finally {
+            $('dropzoneBusy').hidden = true;
+            $('fileInput').value = '';
+            updateEditorPhoto();
+            updateEditorPreview();
+        }
+    }
+
+    function applyImageUrl() {
+        const url = $('imageUrlInput').value.trim();
+        $('photoError').style.display = 'none';
+        if (!/^https:\/\/\S+$/i.test(url)) {
+            $('photoError').textContent = 'Нужна ссылка, начинающаяся с https://';
+            $('photoError').style.display = 'block';
+            return;
+        }
+        const test = new Image();
+        test.onload = () => {
+            editor.processed = null;
+            editor.image = url;
+            $('urlRow').hidden = true;
+            updateEditorPhoto();
+            updateEditorPreview();
+        };
+        test.onerror = () => {
+            $('photoError').textContent = 'По этой ссылке не открывается картинка. Нужна прямая ссылка на изображение.';
+            $('photoError').style.display = 'block';
+        };
+        test.src = url;
+    }
+
+    function removePhoto() {
+        editor.processed = null;
+        editor.image = '';
+        updateEditorPhoto();
+        updateEditorPreview();
+    }
+
+    /* ---------------------- Публикация ---------------------- */
+    async function publish() {
+        if (state.busy || !isDirty()) return;
+        if (state.mode === 'demo') {
+            await confirmDialog({ title: 'Демо-режим', text: 'В демо-режиме публикация недоступна. Выйдите и войдите с токеном GitHub, чтобы сохранять изменения на сайте.', ok: 'Понятно', cancel: 'Закрыть' });
+            return;
+        }
+        const invalid = state.products.find(p => p.title.length < 2 || !Number.isFinite(p.price));
+        if (invalid) { toast('У одного из товаров не заполнено название или цена — откройте и исправьте его.', { error: true }); openEditor(invalid.id); return; }
+
+        state.busy = true;
+        clearInterval(state.liveTimer);
+        $('publishBar').dataset.keepStatus = '';
+        setButtonBusy($('publishBtn'), true, 'Публикуем…');
+        $('discardBtn').disabled = true;
+        const step = text => setPublishStatus('busy', text);
+
+        try {
+            const owner = repoPath();
+            const branch = encodeURIComponent(state.cfg.branch);
+
+            step('Проверяем репозиторий…');
+            const ref = await gh(`${owner}/git/ref/heads/${branch}`);
+            const parentSha = ref.object.sha;
+            const parentCommit = await gh(`${owner}/git/commits/${parentSha}`);
+
+            // Защита от перезаписи: каталог мог измениться в другом окне или на другом устройстве
+            let remoteSha = null;
+            try { remoteSha = (await gh(`${owner}/contents/${PRODUCTS_PATH}?ref=${parentSha}`)).sha; } catch (e) { if (e.status !== 404) throw e; }
+            if (remoteSha !== state.base.sha) {
+                const answer = await confirmDialog({
+                    title: 'Каталог изменился',
+                    text: 'Пока вы редактировали, каталог на сайте изменили (в другой вкладке или на другом устройстве). Можно опубликовать вашу версию поверх или загрузить свежую версию (ваши неопубликованные правки пропадут).',
+                    ok: 'Опубликовать мою версию', alt: 'Загрузить свежую', cancel: 'Отмена'
+                });
+                if (answer === 'alt') {
+                    const fresh = await fetchCatalogFromGitHub();
+                    state.base = { sha: fresh.sha, products: fresh.products };
+                    state.products = clone(fresh.products);
+                    state.pendingImages = {};
+                    toast('Загружена свежая версия каталога');
+                    return;
+                }
+                if (answer !== 'ok') return;
+            }
+
+            cleanupPendingImages();
+            const used = new Set(state.products.map(p => p.image));
+            const entries = [];
+
+            // 1) Новые фото: создаём blob-объекты в репозитории
+            const pending = Object.entries(state.pendingImages).filter(([path]) => used.has(path));
+            for (let i = 0; i < pending.length; i++) {
+                const [path, img] = pending[i];
+                step(`Загружаем фото ${i + 1} из ${pending.length}…`);
+                const blob = await gh(`${owner}/git/blobs`, { method: 'POST', body: { content: img.base64, encoding: 'base64' } });
+                entries.push({ path, mode: '100644', type: 'blob', sha: blob.sha });
+            }
+
+            // 2) Старые фото, которые больше не используются, удаляем из папки images/
+            const baseImages = new Set(state.base.products.map(p => p.image).filter(src => src.startsWith(IMAGES_DIR + '/')));
+            const unused = [...baseImages].filter(src => !used.has(src));
+            if (unused.length) {
+                let existing = new Set();
+                try { existing = new Set((await gh(`${owner}/contents/${IMAGES_DIR}?ref=${parentSha}`)).map(f => f.path)); } catch (e) { if (e.status !== 404) throw e; }
+                unused.filter(src => existing.has(src)).forEach(path => entries.push({ path, mode: '100644', type: 'blob', sha: null }));
+            }
+
+            // 3) Сам каталог
+            const updatedAt = new Date().toISOString();
+            const json = JSON.stringify({ version: 1, updatedAt, products: state.products }, null, 2) + '\n';
+            entries.push({ path: PRODUCTS_PATH, mode: '100644', type: 'blob', content: json });
+
+            // 4) Один коммит со всеми изменениями
+            step('Сохраняем изменения в GitHub…');
+            const tree = await gh(`${owner}/git/trees`, { method: 'POST', body: { base_tree: parentCommit.tree.sha, tree: entries } });
+            const summary = diffSummary().text || 'обновление';
+            const commit = await gh(`${owner}/git/commits`, { method: 'POST', body: { message: `Каталог: ${summary}`, tree: tree.sha, parents: [parentSha] } });
+            try {
+                await gh(`${owner}/git/refs/heads/${branch}`, { method: 'PATCH', body: { sha: commit.sha, force: false } });
+            } catch (e) {
+                if (e.status === 422) { const err = new Error('Репозиторий изменился в момент публикации. Нажмите «Опубликовать» ещё раз.'); err.status = -1; throw err; }
+                throw e;
+            }
+
+            // Успех: опубликованная версия = текущая
+            const jsonEntry = (tree.tree || []).find(t => t.path === PRODUCTS_PATH);
+            Object.entries(state.pendingImages).forEach(([path, img]) => { state.recentImages[path] = img.dataUrl; });
+            state.base = { sha: jsonEntry ? jsonEntry.sha : (await fetchCatalogFromGitHub(commit.sha)).sha, products: clone(state.products) };
+            state.pendingImages = {};
+            storageRemove(KEYS.draft);
+            toast('Опубликовано! Витрина обновится примерно через минуту.');
+            watchLive(updatedAt);
+        } catch (err) {
+            console.error('Публикация не удалась', err);
+            state.busy = false;
+            setPublishStatus('failed', 'Не опубликовано: ' + escapeHtml(err.status === -1 ? err.message : explainError(err)));
+            $('publishBar').dataset.keepStatus = '1';
+            toast('Публикация не удалась — изменения сохранены в черновике', { error: true, timeout: 6000 });
+            setButtonBusy($('publishBtn'), false, 'Опубликовать');
+            $('discardBtn').disabled = false;
+            $('discardBtn').hidden = !isDirty();
+            return;
+        } finally {
+            if (state.busy) {
+                state.busy = false;
+                setButtonBusy($('publishBtn'), false, 'Опубликовать');
+                $('discardBtn').disabled = false;
+                render();
+            }
+        }
+    }
+
+    // Следим, когда GitHub Pages пересоберёт сайт и витрина начнёт отдавать новый каталог
+    function watchLive(updatedAt) {
+        const started = Date.now();
+        const bar = $('publishBar');
+        bar.dataset.keepStatus = '1';
+        const setWaiting = () => setPublishStatus('busy', `Опубликовано в ${timeNow()}. GitHub Pages обновляет витрину… (обычно до 1–2 минут)`);
+        setWaiting();
+        clearInterval(state.liveTimer);
+        const check = async () => {
+            if (isDirty()) { clearInterval(state.liveTimer); bar.dataset.keepStatus = ''; updatePublishBar(); return; }
+            try {
+                const res = await fetch(siteBase() + PRODUCTS_PATH + '?live=' + Date.now(), { cache: 'no-store' });
+                const data = await res.json();
+                if (data.updatedAt === updatedAt) {
+                    clearInterval(state.liveTimer);
+                    setPublishStatus('', `✓ Изменения уже на витрине (${timeNow()}). <a href="${escapeHtml(siteBase())}" target="_blank" rel="noopener">Открыть сайт ↗</a>`);
+                    return;
+                }
+            } catch (e) { /* сайт ещё пересобирается */ }
+            if (Date.now() - started > 5 * 60 * 1000) {
+                clearInterval(state.liveTimer);
+                setPublishStatus('', '✓ Опубликовано. Витрина обновляется дольше обычного — проверьте сайт через пару минут.');
+            }
+        };
+        state.liveTimer = setInterval(check, 8000);
+        setTimeout(check, 3000);
+    }
+
+    /* ---------------------- Подключение обработчиков ---------------------- */
+    $('loginForm').addEventListener('submit', handleLogin);
+    $('demoBtn').addEventListener('click', enterDemo);
+    $('toggleTokenBtn').addEventListener('click', () => {
+        const input = $('tokenInput');
+        input.type = input.type === 'password' ? 'text' : 'password';
+        $('toggleTokenBtn').textContent = input.type === 'password' ? 'Показать' : 'Скрыть';
+    });
+    ['ownerInput', 'repoInput', 'branchInput'].forEach(id => $(id).addEventListener('change', readCfgInputs));
+
+    $('logoutBtn').addEventListener('click', logout);
+    $('addBtn').addEventListener('click', () => openEditor());
+    $('publishBtn').addEventListener('click', publish);
+    $('discardBtn').addEventListener('click', discardChanges);
+    $('productList').addEventListener('click', handleListClick);
+    $('productList').addEventListener('change', e => { if (e.target.matches('[data-action="toggle"]')) handleListClick(e); });
+    $('searchInput').addEventListener('input', () => renderList());
+    $('categoryFilter').addEventListener('change', () => renderList());
+
+    $('editorForm').addEventListener('submit', saveEditor);
+    $('editorForm').addEventListener('input', e => {
+        const field = e.target.closest('.field');
+        if (field) field.classList.remove('invalid');
+        updateEditorPreview();
+    });
+    $('editorModal').querySelectorAll('[data-close]').forEach(el => el.addEventListener('click', () => closeEditor(false)));
+
+    const dropzone = $('dropzone');
+    dropzone.addEventListener('click', () => $('fileInput').click());
+    dropzone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('fileInput').click(); } });
+    ['dragenter', 'dragover'].forEach(t => dropzone.addEventListener(t, e => { e.preventDefault(); dropzone.classList.add('drag'); }));
+    ['dragleave', 'drop'].forEach(t => dropzone.addEventListener(t, e => { e.preventDefault(); dropzone.classList.remove('drag'); }));
+    dropzone.addEventListener('drop', e => { const file = e.dataTransfer.files && e.dataTransfer.files[0]; if (file) handlePhotoFile(file); });
+    $('fileInput').addEventListener('change', e => { const file = e.target.files && e.target.files[0]; if (file) handlePhotoFile(file); });
+    $('choosePhotoBtn').addEventListener('click', () => $('fileInput').click());
+    $('removePhotoBtn').addEventListener('click', removePhoto);
+    $('urlPhotoBtn').addEventListener('click', () => { $('urlRow').hidden = !$('urlRow').hidden; if (!$('urlRow').hidden) $('imageUrlInput').focus(); });
+    $('applyUrlBtn').addEventListener('click', applyImageUrl);
+    $('imageUrlInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); applyImageUrl(); } });
+
+    // Вставка фото из буфера обмена (Ctrl+V), пока открыт редактор
+    document.addEventListener('paste', e => {
+        if ($('editorModal').hidden) return;
+        const file = [...(e.clipboardData ? e.clipboardData.files : [])].find(f => f.type.startsWith('image/'));
+        if (file) { e.preventDefault(); handlePhotoFile(file); }
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key !== 'Escape') return;
+        if (!$('confirmModal').hidden && $('confirmModal')._cancel) { $('confirmModal')._cancel(); return; }
+        if (!$('editorModal').hidden) closeEditor(false);
+    });
+
+    window.addEventListener('beforeunload', e => {
+        if (state.mode === 'github' && (isDirty() || state.busy)) { e.preventDefault(); e.returnValue = ''; }
+    });
+
+    /* ---------------------- Старт ---------------------- */
+    (async function start() {
+        loadCfg();
+        const saved = storageGet(KEYS.token);
+        if (!saved) return;
+        $('loginView').hidden = true;
+        try {
+            const persistent = (() => { try { return !!localStorage.getItem(KEYS.token); } catch (e) { return false; } })();
+            await loginWithToken(saved, persistent);
+        } catch (err) {
+            storageRemove(KEYS.token);
+            state.token = '';
+            $('appView').hidden = true;
+            $('loginView').hidden = false;
+            showLoginError('Не удалось войти автоматически: ' + explainError(err));
+        }
+    })();
+    </script>
+</body>
+</html>
