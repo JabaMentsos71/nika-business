@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-21T00:00:00.000Z",
+  "products": [
+    {
+      "id": "p-audit",
+      "title": "Комплексный аудит бизнеса",
+      "description": "Полный анализ процессов с предоставлением детального отчета и рекомендаций.",
+      "price": 150000,
+      "oldPrice": null,
+      "category": "Консалтинг",
+      "badge": "",
+      "image": "",
+      "visible": true
+    },
+    {
+      "id": "p-crm",
+      "title": "Настройка CRM системы",
+      "description": "Интеграция, настройка воронок продаж и обучение сотрудников под ключ.",
+      "price": 220000,
+      "oldPrice": null,
+      "category": "Автоматизация",
+      "badge": "Хит",
+      "image": "",
+      "visible": true
+    }
+  ]
+}
