@@ -1,27 +1,157 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-21T00:00:00.000Z",
+  "updatedAt": "2026-10-23T06:25:58.043Z",
   "products": [
     {
       "id": "p-audit",
       "title": "Комплексный аудит бизнеса",
-      "description": "Полный анализ процессов с предоставлением детального отчета и рекомендаций.",
-      "price": 150000,
-      "oldPrice": null,
+      "description": "Полный анализ процессов, финансов и продаж. На выходе — детальный отчёт и пошаговый план улучшений.",
+      "price": 120000,
+      "oldPrice": 150000,
+      "unit": "за проект",
+      "features": [
+        "Срок — 10 рабочих дней",
+        "Отчёт и план улучшений",
+        "Разбор результатов с экспертом"
+      ],
       "category": "Консалтинг",
-      "badge": "",
-      "image": "",
+      "badge": "Хит",
+      "image": "images/p-kompleksnyy-audit-biznesa-mvkl5kpe.webp",
       "visible": true
     },
     {
       "id": "p-crm",
       "title": "Настройка CRM системы",
-      "description": "Интеграция, настройка воронок продаж и обучение сотрудников под ключ.",
+      "description": "Внедрим amoCRM или Битрикс24: воронки продаж, автоматизация задач и обучение сотрудников под ключ.",
       "price": 220000,
       "oldPrice": null,
+      "unit": "за проект",
+      "features": [
+        "amoCRM или Битрикс24",
+        "Воронки и автозадачи",
+        "Обучение команды"
+      ],
       "category": "Автоматизация",
-      "badge": "Хит",
-      "image": "",
+      "badge": "",
+      "image": "images/p-nastroyka-crm-sistemy-mvkl5l6i.webp",
+      "visible": true
+    },
+    {
+      "id": "p-mvkl5lnfjrcz",
+      "title": "Бухгалтерское сопровождение",
+      "description": "Ведём учёт, сдаём отчётность и считаем зарплату. Вы занимаетесь бизнесом — мы цифрами.",
+      "price": 90000,
+      "oldPrice": null,
+      "unit": "/ мес",
+      "features": [
+        "Налоговая отчётность",
+        "Зарплата и кадры",
+        "Консультации без ограничений"
+      ],
+      "category": "Бухгалтерия",
+      "badge": "",
+      "image": "images/p-buhgalterskoe-soprovozhdenie-mvkl5lnf.webp",
+      "visible": true
+    },
+    {
+      "id": "p-mvkl5m6lvwru",
+      "title": "Маркетинг под ключ",
+      "description": "Стратегия продвижения, таргетированная и контекстная реклама, аналитика и еженедельные отчёты.",
+      "price": 180000,
+      "oldPrice": null,
+      "unit": "/ мес",
+      "features": [
+        "Стратегия и медиаплан",
+        "Таргет и контекстная реклама",
+        "Еженедельные отчёты"
+      ],
+      "category": "Маркетинг",
+      "badge": "Новинка",
+      "image": "images/p-marketing-pod-klyuch-mvkl5m6l.webp",
+      "visible": true
+    },
+    {
+      "id": "p-mvkl5mo0t1ky",
+      "title": "Регистрация ТОО или ИП",
+      "description": "Подготовим документы, зарегистрируем компанию и поможем открыть расчётный счёт.",
+      "price": 35000,
+      "oldPrice": null,
+      "unit": "за проект",
+      "features": [
+        "Подготовка всех документов",
+        "Открытие расчётного счёта",
+        "Под ключ за 3 дня"
+      ],
+      "category": "Юридические услуги",
+      "badge": "",
+      "image": "images/p-registratsiya-too-ili-ip-mvkl5mo0.webp",
+      "visible": true
+    },
+    {
+      "id": "p-mvkl5n68p9z7",
+      "title": "Договоры и юридическая проверка",
+      "description": "Составим или проверим договор с клиентом, поставщиком или сотрудником, укажем на риски.",
+      "price": 25000,
+      "oldPrice": null,
+      "unit": "за документ",
+      "features": [
+        "Проверка за 2 рабочих дня",
+        "Список рисков и правок"
+      ],
+      "category": "Юридические услуги",
+      "badge": "",
+      "image": "images/p-dogovory-i-yuridicheskaya-proverka-mvkl5n68.webp",
+      "visible": true
+    },
+    {
+      "id": "p-mvkl5nohmvi3",
+      "title": "Бизнес-план и финансовая модель",
+      "description": "Расчёт окупаемости, анализ рынка и финансовая модель на 3 года — для банка, инвестора или себя.",
+      "price": 140000,
+      "oldPrice": null,
+      "unit": "за проект",
+      "features": [
+        "Финансовая модель на 3 года",
+        "Анализ рынка и конкурентов",
+        "Подходит для банка"
+      ],
+      "category": "Консалтинг",
+      "badge": "",
+      "image": "images/p-biznes-plan-i-finansovaya-model-mvkl5noh.webp",
+      "visible": true
+    },
+    {
+      "id": "p-mvkl5o5s1bqh",
+      "title": "Сайт-визитка для компании",
+      "description": "Современный адаптивный сайт с формой заявок и подключённой аналитикой.",
+      "price": 250000,
+      "oldPrice": 300000,
+      "unit": "за проект",
+      "features": [
+        "Дизайн и вёрстка",
+        "Адаптив под телефоны",
+        "Хостинг и домен на год"
+      ],
+      "category": "Автоматизация",
+      "badge": "Акция",
+      "image": "images/p-sayt-vizitka-dlya-kompanii-mvkl5o5s.webp",
+      "visible": true
+    },
+    {
+      "id": "p-mvkl5op8ajr2",
+      "title": "Тренинг для отдела продаж",
+      "description": "Двухдневный тренинг: скрипты, работа с возражениями и разбор реальных звонков вашей команды.",
+      "price": 95000,
+      "oldPrice": null,
+      "unit": "за группу",
+      "features": [
+        "2 дня практики",
+        "Скрипты и регламенты",
+        "Сертификаты участникам"
+      ],
+      "category": "Обучение",
+      "badge": "",
+      "image": "images/p-trening-dlya-otdela-prodazh-mvkl5op8.webp",
       "visible": true
     }
   ]
