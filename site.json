@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-23T00:00:00.000Z",
+  "settings": {
+    "storeName": "Nika Business",
+    "logo": "",
+    "metaDescription": "Премиальные решения для бизнеса: аудит, CRM, бухгалтерия, маркетинг.",
+    "primaryColor": "#1A2B4C",
+    "accentColor": "#D4AF37",
+    "currency": "₸",
+    "showHero": true,
+    "heroTitle": "Премиальные решения для бизнеса",
+    "heroSubtitle": "Доверьте рутину профессионалам. Nika Business — ваш надежный партнер.",
+    "heroButton": "Смотреть услуги",
+    "heroImage": "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1600",
+    "catalogTitle": "Наши услуги",
+    "catalogSubtitle": "Выберите услуги и оформите заказ в пару кликов",
+    "phone": "",
+    "email": "",
+    "address": "",
+    "workHours": "",
+    "whatsapp": "",
+    "telegram": "",
+    "instagram": "",
+    "footerText": "Все цены указаны в тенге.",
+    "emailjsPublicKey": "DCHk7orj0fn1LFoVo",
+    "emailjsServiceId": "service_eqi984h",
+    "emailjsTemplateId": "template_ktrn6fd"
+  },
+  "banners": []
+}
